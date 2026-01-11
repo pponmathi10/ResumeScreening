@@ -20,6 +20,36 @@ ROLE_SKILLS = {
     "Machine Learning Engineer": {
         "main": "machine learning",
         "skills": ["python", "machine learning", "pandas", "numpy", "scikit-learn"]
+    "Software Engineer": {
+        "main": "data structures",
+        "skills": [
+            "data structures",
+            "algorithms",
+            "problem solving",
+            "oops",
+            "java",
+            "python",
+            "system design",
+            "sql",
+            "git"
+        ]
+    },
+
+    "Software Developer": {
+        "main": "programming",
+        "skills": [
+            "programming",
+            "java",
+            "python",
+            "javascript",
+            "html",
+            "css",
+            "sql",
+            "git",
+            "application development"
+        ]
+    }
+}
     }
 }
 
@@ -113,3 +143,4 @@ else:
 
     if st.button("Logout"):
         st.session_state.login = False
+
