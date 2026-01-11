@@ -23,6 +23,7 @@ ROLE_SKILLS = {
      "Web Developer": {
         "main": "javascript",
         "skills": ["html", "css", "javascript", "react", "bootstrap"]
+    ROLE_SKILLS = {
     "Software Engineer": {
         "main": "data structures",
         "skills": [
@@ -53,8 +54,7 @@ ROLE_SKILLS = {
         ]
     }
 }
-    }
-}
+
 
 # ---------------- PDF Reader ----------------
 def read_pdf(file):
@@ -146,5 +146,6 @@ else:
 
     if st.button("Logout"):
         st.session_state.login = False
+
 
 
