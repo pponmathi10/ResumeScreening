@@ -29,6 +29,36 @@ ROLE_SKILLS = {
     "Web Developer": {
         "main": "javascript",
         "skills": ["html", "css", "javascript", "react", "bootstrap"]
+    "Software Engineer": {
+        "main": "data structures",
+        "skills": [
+            "data structures",
+            "algorithms",
+            "problem solving",
+            "oops",
+            "java",
+            "python",
+            "system design",
+            "sql",
+            "git"
+        ]
+    },
+
+    "Software Developer": {
+        "main": "programming",
+        "skills": [
+            "programming",
+            "java",
+            "python",
+            "javascript",
+            "html",
+            "css",
+            "sql",
+            "git",
+            "application development"
+        ]
+    }
+}
     }
 }
 
@@ -121,6 +151,7 @@ if st.button("🚀 Screen My Resume"):
             f"Focus on learning and adding these skills to your resume: "
             f"{', '.join(missing[:3])}"
         )
+
 
 
 
