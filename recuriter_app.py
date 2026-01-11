@@ -4,23 +4,23 @@ import pandas as pd
 from io import BytesIO
 
 # --------------------------------------------------
-# Page Configuration
+# Page Config
 # --------------------------------------------------
 st.set_page_config(page_title="Recruiter ATS Resume Screening", layout="wide")
 st.title("🧑‍💼 Recruiter ATS Resume Screening")
-st.caption("Secure Login | Bulk Resume Screening | Excel Export")
+st.caption("Signup | Login | Bulk Resume Screening | Excel Export")
 
 # --------------------------------------------------
-# Dummy Login Credentials (You can change)
+# Session State Initialization
 # --------------------------------------------------
-VALID_USERNAME = "recruiter"
-VALID_PASSWORD = "recruiter123"
+if "users" not in st.session_state:
+    st.session_state.users = {}   # stores username:password
 
-# --------------------------------------------------
-# Session State for Login
-# --------------------------------------------------
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
+
+if "current_user" not in st.session_state:
+    st.session_state.current_user = ""
 
 # --------------------------------------------------
 # Job Roles & Skills
@@ -47,9 +47,8 @@ def read_pdf(file):
     reader = PyPDF2.PdfReader(file)
     text = ""
     for page in reader.pages:
-        page_text = page.extract_text()
-        if page_text:
-            text += page_text
+        if page.extract_text():
+            text += page.extract_text()
     return text.lower()
 
 # --------------------------------------------------
@@ -64,7 +63,6 @@ def evaluate_resume(text, role):
 
     score = int((len(matched) / len(skills)) * 100)
 
-    # Selection Conditions
     if (main_skill in text) or (len(matched) >= 2) or (score >= 50):
         decision = "SELECT"
         hiring_status = "Hired"
@@ -75,26 +73,47 @@ def evaluate_resume(text, role):
     return score, decision, hiring_status, matched, missing, skills
 
 # ==================================================
-# 🔐 LOGIN PAGE
+# 🔐 SIGNUP & LOGIN
 # ==================================================
 if not st.session_state.logged_in:
-    st.subheader("🔐 Recruiter Login")
+    tab1, tab2 = st.tabs(["📝 Signup", "🔐 Login"])
 
-    username = st.text_input("Username")
-    password = st.text_input("Password", type="password")
+    # ---------- SIGNUP ----------
+    with tab1:
+        st.subheader("Create Recruiter Account")
 
-    if st.button("Login"):
-        if username == VALID_USERNAME and password == VALID_PASSWORD:
-            st.session_state.logged_in = True
-            st.success("Login successful")
-        else:
-            st.error("Invalid username or password")
+        new_user = st.text_input("Create Username")
+        new_pass = st.text_input("Create Password", type="password")
+
+        if st.button("Signup"):
+            if not new_user or not new_pass:
+                st.warning("Please fill all fields")
+            elif new_user in st.session_state.users:
+                st.error("Username already exists")
+            else:
+                st.session_state.users[new_user] = new_pass
+                st.success("Account created successfully! Please login.")
+
+    # ---------- LOGIN ----------
+    with tab2:
+        st.subheader("Recruiter Login")
+
+        user = st.text_input("Username")
+        pwd = st.text_input("Password", type="password")
+
+        if st.button("Login"):
+            if user in st.session_state.users and st.session_state.users[user] == pwd:
+                st.session_state.logged_in = True
+                st.session_state.current_user = user
+                st.success("Login successful")
+            else:
+                st.error("Invalid username or password")
 
 # ==================================================
 # 📊 ATS DASHBOARD (AFTER LOGIN)
 # ==================================================
 else:
-    st.success("Logged in as Recruiter")
+    st.success(f"Logged in as: {st.session_state.current_user}")
 
     role = st.selectbox("Select Job Role", ROLE_SKILLS.keys())
 
@@ -112,12 +131,12 @@ else:
 
             for resume in resumes:
                 if resume.type == "application/pdf":
-                    resume_text = read_pdf(resume)
+                    text = read_pdf(resume)
                 else:
-                    resume_text = resume.read().decode("utf-8").lower()
+                    text = resume.read().decode("utf-8").lower()
 
                 score, decision, hiring_status, matched, missing, skills = evaluate_resume(
-                    resume_text, role
+                    text, role
                 )
 
                 results.append({
@@ -135,21 +154,20 @@ else:
             st.subheader("📋 Resume Screening Results")
             st.dataframe(df, use_container_width=True)
 
-            # ---------------- Excel Download ----------------
-            excel_buffer = BytesIO()
-            df.to_excel(excel_buffer, index=False)
-            excel_buffer.seek(0)
+            # -------- Excel Download --------
+            buffer = BytesIO()
+            df.to_excel(buffer, index=False)
+            buffer.seek(0)
 
             st.download_button(
                 label="⬇️ Download Results as Excel",
-                data=excel_buffer,
+                data=buffer,
                 file_name="ATS_Resume_Screening_Results.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-    # --------------------------------------------------
-    # Logout
-    # --------------------------------------------------
+    # ---------- LOGOUT ----------
     if st.button("🚪 Logout"):
         st.session_state.logged_in = False
+        st.session_state.current_user = ""
         st.success("Logged out successfully")
