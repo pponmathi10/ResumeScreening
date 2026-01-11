@@ -3,13 +3,28 @@ import PyPDF2
 import pandas as pd
 from io import BytesIO
 
-# ---------------- Page Config ----------------
+# --------------------------------------------------
+# Page Configuration
+# --------------------------------------------------
 st.set_page_config(page_title="Recruiter ATS Resume Screening", layout="wide")
-
 st.title("🧑‍💼 Recruiter ATS Resume Screening")
-st.caption("Bulk Resume Screening with AI Score & Hiring Decision")
+st.caption("Secure Login | Bulk Resume Screening | Excel Export")
 
-# ---------------- Job Roles & Skills ----------------
+# --------------------------------------------------
+# Dummy Login Credentials (You can change)
+# --------------------------------------------------
+VALID_USERNAME = "recruiter"
+VALID_PASSWORD = "recruiter123"
+
+# --------------------------------------------------
+# Session State for Login
+# --------------------------------------------------
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+# --------------------------------------------------
+# Job Roles & Skills
+# --------------------------------------------------
 ROLE_SKILLS = {
     "Java Developer": {
         "main": "java",
@@ -25,7 +40,9 @@ ROLE_SKILLS = {
     }
 }
 
-# ---------------- PDF Reader ----------------
+# --------------------------------------------------
+# PDF Reader
+# --------------------------------------------------
 def read_pdf(file):
     reader = PyPDF2.PdfReader(file)
     text = ""
@@ -35,7 +52,9 @@ def read_pdf(file):
             text += page_text
     return text.lower()
 
-# ---------------- Resume Evaluation Logic ----------------
+# --------------------------------------------------
+# Resume Evaluation Logic
+# --------------------------------------------------
 def evaluate_resume(text, role):
     main_skill = ROLE_SKILLS[role]["main"]
     skills = ROLE_SKILLS[role]["skills"]
@@ -55,54 +74,82 @@ def evaluate_resume(text, role):
 
     return score, decision, hiring_status, matched, missing, skills
 
-# ---------------- UI ----------------
-role = st.selectbox("Select Job Role", ROLE_SKILLS.keys())
+# ==================================================
+# 🔐 LOGIN PAGE
+# ==================================================
+if not st.session_state.logged_in:
+    st.subheader("🔐 Recruiter Login")
 
-resumes = st.file_uploader(
-    "Upload Candidate Resumes (Multiple Files Allowed)",
-    type=["pdf", "txt"],
-    accept_multiple_files=True
-)
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
 
-if st.button("🔍 Screen All Resumes"):
-    if not resumes:
-        st.warning("Please upload at least one resume")
-    else:
-        results = []
+    if st.button("Login"):
+        if username == VALID_USERNAME and password == VALID_PASSWORD:
+            st.session_state.logged_in = True
+            st.success("Login successful")
+        else:
+            st.error("Invalid username or password")
 
-        for resume in resumes:
-            if resume.type == "application/pdf":
-                resume_text = read_pdf(resume)
-            else:
-                resume_text = resume.read().decode("utf-8").lower()
+# ==================================================
+# 📊 ATS DASHBOARD (AFTER LOGIN)
+# ==================================================
+else:
+    st.success("Logged in as Recruiter")
 
-            score, decision, hiring_status, matched, missing, skills = evaluate_resume(
-                resume_text, role
+    role = st.selectbox("Select Job Role", ROLE_SKILLS.keys())
+
+    resumes = st.file_uploader(
+        "Upload Candidate Resumes (Multiple files allowed)",
+        type=["pdf", "txt"],
+        accept_multiple_files=True
+    )
+
+    if st.button("🔍 Screen All Resumes"):
+        if not resumes:
+            st.warning("Please upload at least one resume")
+        else:
+            results = []
+
+            for resume in resumes:
+                if resume.type == "application/pdf":
+                    resume_text = read_pdf(resume)
+                else:
+                    resume_text = resume.read().decode("utf-8").lower()
+
+                score, decision, hiring_status, matched, missing, skills = evaluate_resume(
+                    resume_text, role
+                )
+
+                results.append({
+                    "Resume File": resume.name,
+                    "Job Role": role,
+                    "AI Score (%)": score,
+                    "Decision": decision,
+                    "Hiring Status": hiring_status,
+                    "Matched Skills": ", ".join(matched) if matched else "None",
+                    "Missing Skills": ", ".join(missing) if missing else "None"
+                })
+
+            df = pd.DataFrame(results)
+
+            st.subheader("📋 Resume Screening Results")
+            st.dataframe(df, use_container_width=True)
+
+            # ---------------- Excel Download ----------------
+            excel_buffer = BytesIO()
+            df.to_excel(excel_buffer, index=False)
+            excel_buffer.seek(0)
+
+            st.download_button(
+                label="⬇️ Download Results as Excel",
+                data=excel_buffer,
+                file_name="ATS_Resume_Screening_Results.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-            results.append({
-                "Resume File": resume.name,
-                "Job Role": role,
-                "AI Score (%)": score,
-                "Decision": decision,
-                "Hiring Status": hiring_status,
-                "Matched Skills": ", ".join(matched) if matched else "None",
-                "Missing Skills": ", ".join(missing) if missing else "None"
-            })
-
-        df = pd.DataFrame(results)
-
-        st.subheader("📋 Resume Screening Results")
-        st.dataframe(df, use_container_width=True)
-
-        # ---------------- Excel Download ----------------
-        excel_buffer = BytesIO()
-        df.to_excel(excel_buffer, index=False)
-        excel_buffer.seek(0)
-
-        st.download_button(
-            label="⬇️ Download Results as Excel",
-            data=excel_buffer,
-            file_name="ATS_Resume_Screening_Results.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
+    # --------------------------------------------------
+    # Logout
+    # --------------------------------------------------
+    if st.button("🚪 Logout"):
+        st.session_state.logged_in = False
+        st.success("Logged out successfully")
