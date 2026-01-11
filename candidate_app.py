@@ -1,8 +1,6 @@
 import streamlit as st
 import PyPDF2
 
-st.set_page_config(page_title="Candidate Resume Screening", layout="wide")
-
 # Hide default footer
 st.markdown(
     """
@@ -22,6 +20,9 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
+
+st.set_page_config(page_title="Candidate Resume Screening", layout="wide")
 
 st.title("🧑 Candidate Resume Screening Portal")
 st.caption("AI-based Resume Evaluation")
@@ -141,4 +142,5 @@ if st.button("🚀 Screen My Resume"):
             f"Focus on learning and adding these skills to your resume: "
             f"{', '.join(missing[:3])}"
         )
+
 
