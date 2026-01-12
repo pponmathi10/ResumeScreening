@@ -1,5 +1,4 @@
 import streamlit as st
-impimport streamlit as st
 import PyPDF2
 
 st.set_page_config(page_title="Candidate Resume Screening", layout="wide")
@@ -156,3 +155,4 @@ if st.button("🚀 Screen My Resume"):
             "- Improve resume formatting for ATS (simple, clean layout)\n"
             "- Add internships, workshops, or certifications"
 )
+
