@@ -1,4 +1,5 @@
 import streamlit as st
+impimport streamlit as st
 import PyPDF2
 
 st.set_page_config(page_title="Candidate Resume Screening", layout="wide")
@@ -56,7 +57,6 @@ def evaluate_resume(resume_text, role, jd_text=None):
 
     score = int((len(matched) / len(required_skills)) * 100)
 
-    # Selection Conditions
     main_skill_present = main_skill in resume_text
     two_skills_present = len(matched) >= 2
     percentage_pass = score >= 50
@@ -87,9 +87,7 @@ job_description = st.text_area(
     placeholder="Paste the job description here (optional)"
 )
 
-resume_file = st.file_uploader(
-    "Upload Resume (PDF or TXT)", type=["pdf", "txt"]
-)
+resume_file = st.file_uploader("Upload Resume (PDF or TXT)", type=["pdf", "txt"])
 
 if st.button("🚀 Screen My Resume"):
     if not candidate_name or not resume_file:
@@ -115,34 +113,46 @@ if st.button("🚀 Screen My Resume"):
 
     col1, col2 = st.columns(2)
     col1.metric("Resume Skill Match", f"{score}%")
-
-    if jd_score is not None:
-        col2.metric("JD Match Score", f"{jd_score}%")
-    else:
-        col2.metric("JD Match Score", "Not Provided")
+    col2.metric("JD Match Score", f"{jd_score}%" if jd_score is not None else "Not Provided")
 
     st.progress(score / 100)
-
     st.markdown(f"### 🧾 Final Decision: **{decision}**")
 
+    # ==================================================
+    # ✅ SELECTED OUTPUT
+    # ==================================================
     if decision == "SELECTED":
         st.success("🎉 Congratulations! Your resume meets the selection criteria.")
 
-        reasons = []
-        if main_skill_present:
-            reasons.append("Main skill detected")
-        if len(matched) >= 2:
-            reasons.append("At least 2 required skills matched")
-        if score >= 50:
-            reasons.append("Skill match ≥ 50%")
+        st.info("✅ Strengths Identified")
+        st.write("Matched Skills:", ", ".join(matched))
 
-        st.info("✅ Selection Reason(s): " + " | ".join(reasons))
-        st.write("**Matched Skills:**", ", ".join(matched))
+        st.markdown("### 📈 How You Can Improve Further")
+        st.write(
+            "- Add **real-time projects** related to your role\n"
+            "- Include **certifications** for missing or advanced skills\n"
+            "- Mention **tools & frameworks** clearly\n"
+            "- Quantify achievements (e.g., improved performance by 20%)"
+        )
 
+        if missing:
+            st.warning("💡 Optional Skills to Learn:")
+            st.write(", ".join(missing))
+
+    # ==================================================
+    # ❌ REJECTED OUTPUT
+    # ==================================================
     else:
-        st.error("❌ Unfortunately, your resume does not meet the minimum criteria.")
-        st.warning("**Missing Skills:** " + ", ".join(missing))
+        st.error("❌ Your resume does not meet the minimum criteria.")
 
-        st.markdown("### 📈 How You Can Improve")
-        st.info("Focus on learning and adding these skills: " + ", ".join(missing[:3]))
+        st.markdown("### 🔧 Skills You Need to Improve")
+        st.warning(", ".join(missing))
 
+        st.markdown("### 📝 Resume Improvement Suggestions")
+        st.write(
+            "- Add **main skill** prominently in summary and skills section\n"
+            "- Include **hands-on projects** using missing skills\n"
+            "- Use **job description keywords** in resume\n"
+            "- Improve resume formatting for ATS (simple, clean layout)\n"
+            "- Add internships, workshops, or certifications"
+)
