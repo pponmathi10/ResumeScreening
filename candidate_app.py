@@ -10,17 +10,15 @@ st.set_page_config(
 )
 
 # ==============================
-# NEON CSS (PURPLE / PINK)
-# ==============================
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Inter:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
 /* FULL PAGE BACKGROUND */
 .stApp {
-    background: linear-gradient(135deg, #2b0033, #6a00ff, #ff00cc);
+    background: linear-gradient(135deg, #0b132b, #0f2a44, #00f5d4);
     background-attachment: fixed;
-    color: white;
+    color: #eaeaea;
 }
 
 /* REMOVE EXTRA SPACE */
@@ -30,87 +28,83 @@ st.markdown("""
 
 /* TITLE */
 h1 {
-    font-family: 'Orbitron', sans-serif;
     text-align: center;
-    color: #ff00cc;
-    text-shadow: 0 0 20px #ff00cc;
+    color: #00f5d4;
+    text-shadow: 0 0 15px rgba(0,245,212,0.7);
 }
 
 /* SUBTITLE */
 .subtitle {
     text-align: center;
+    color: #b8fff4;
     margin-bottom: 30px;
-    color: #ffe4ff;
 }
 
-/* CARD */
+/* CARD STYLE */
 .card {
-    background: rgba(0,0,0,0.6);
-    border: 1px solid #ff00cc;
+    background: rgba(11,19,43,0.85);
+    border: 1px solid rgba(0,245,212,0.4);
     border-radius: 18px;
-    padding: 26px;
-    margin-bottom: 30px;
-    box-shadow: 0 0 25px #ff00cc;
+    padding: 24px;
+    margin-bottom: 25px;
+    box-shadow: 0 0 20px rgba(0,245,212,0.25);
 }
 
 /* METRIC */
 .metric {
-    background: rgba(0,0,0,0.7);
-    border: 1px solid #ff00cc;
+    background: rgba(11,19,43,0.9);
+    border: 1px solid #00f5d4;
     border-radius: 14px;
     padding: 20px;
     text-align: center;
-    box-shadow: 0 0 15px #ff00cc;
 }
 
 /* DECISION */
 .selected {
-    color: #00ff9c;
+    color: #00f5d4;
     font-size: 22px;
     font-weight: bold;
 }
 .rejected {
-    color: #ff4d4d;
+    color: #ff5c5c;
     font-size: 22px;
     font-weight: bold;
 }
 
-/* SKILLS */
+/* SKILL TAG */
 .skill {
     display: inline-block;
-    padding: 8px 16px;
+    padding: 7px 14px;
     margin: 6px;
-    border-radius: 20px;
-    background: rgba(255,0,204,0.2);
-    border: 1px solid #ff00cc;
-    box-shadow: 0 0 10px #ff00cc;
+    border-radius: 18px;
+    background: rgba(0,245,212,0.15);
+    border: 1px solid rgba(0,245,212,0.5);
 }
 
-/* IMPROVEMENT */
+/* IMPROVEMENT TIP */
 .tip {
-    border-left: 4px solid #ff00cc;
-    padding: 14px;
-    margin-bottom: 12px;
-    background: rgba(0,0,0,0.6);
+    border-left: 4px solid #00f5d4;
+    padding: 12px;
+    margin-bottom: 10px;
+    background: rgba(11,19,43,0.8);
     border-radius: 10px;
 }
 
 /* BUTTON */
 .stButton>button {
-    background: linear-gradient(90deg, #ff00cc, #6a00ff);
-    color: white;
-    font-weight: bold;
-    padding: 12px 32px;
+    background: linear-gradient(90deg, #00f5d4, #2ec4b6);
+    color: #0b132b;
+    font-weight: 600;
+    padding: 12px 28px;
     border-radius: 12px;
     border: none;
-    box-shadow: 0 0 20px #ff00cc;
+    box-shadow: 0 0 15px rgba(0,245,212,0.6);
 }
 .stButton>button:hover {
     transform: scale(1.05);
 }
 </style>
 """, unsafe_allow_html=True)
-
 # ==============================
 # TITLE
 # ==============================
@@ -184,4 +178,5 @@ if st.button("⚡ Screen Resume"):
         st.markdown(f"<div class='tip'>Add experience in <b>{s}</b></div>", unsafe_allow_html=True)
 
     st.markdown("</div>", unsafe_allow_html=True)
+
 
