@@ -5,7 +5,7 @@ import PyPDF2
 # PAGE CONFIG
 # ==================================================
 st.set_page_config(
-    page_title="Executive AI Resume Screening",
+    page_title="“Intelligent Resume Screening System Using NLP and Machine Learning”",
     layout="wide"
 )
 
@@ -233,3 +233,4 @@ if st.button("Run Resume Evaluation"):
         st.markdown(f"<div class='tip'>Improve <b>{s.title()}</b> with practical projects and certifications</div>", unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
+
