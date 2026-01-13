@@ -2,147 +2,79 @@ import streamlit as st
 import PyPDF2
 
 # ==================================================
-# ⚙️ Page Configuration
+# ⚙️ PAGE CONFIG
 # ==================================================
-st.set_page_config(page_title="Candidate Resume Screening", layout="wide")
+st.set_page_config(
+    page_title="AI Resume Screening Platform",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
 # ==================================================
-# 🎨 Custom UI Styling (Streamlit Cloud Friendly)
+# 🎨 WEBSITE + INNOVATIVE UI CSS
 # ==================================================
 st.markdown("""
 <style>
-body {
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-}
-.main {
-    background: rgba(255,255,255,0.04);
-}
-.card {
-    background: rgba(255,255,255,0.15);
-    padding: 20px;
-    border-radius: 16px;
-    margin-bottom: 20px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-}
-.skill {
-    display: inline-block;
-    padding: 6px 12px;
-    margin: 4px;
-    border-radius: 12px;
-    background: #00c6ff;
-    color: black;
-    font-weight: 600;
-}
-.missing {
-    background: #ff6b6b;
-    color: white;
-}
-.selected {
-    color: #00ffab;
-    font-size: 24px;
-    font-weight: bold;
-}
-.rejected {
-    color: #ff4b4b;
-    font-size: 24px;
-    font-weight: bold;
-}
-</style>
-""", unsafe_allow_html=True)
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
 
-# ==================================================
-# 🏷️ App Title
-# ==================================================
-st.title("🧑 Candidate Resume Screening Portal")
-st.caption("AI-based Resume Evaluation (JD Optional)")
-
-# ==================================================
-# 🧠 Job Roles & Required Skills
-# ==================================================
-ROLE_SKILLS = {
-    "Java Developer": {
-        "main": "java",
-        "skills": ["java", "spring", "spring boot", "sql", "oops", "data structures"]
-    },
-    "Python Developer": {
-        "main": "python",
-        "skills": ["python", "django", "flask", "sql", "oops"]
-    },
-    "Machine Learning Engineer": {
-        "main": "machine learning",
-        "skills": ["python", "machine learning", "scikit-learn", "pandas", "numpy"]
-    },
-    "Data Scientist": {
-        "main": "python",
-        "skills": ["python", "machine learning", "statistics", "pandas", "sql"]
-    },
-    "Web Developer": {
-        "main": "javascript",
-        "skills": ["html", "css", "javascript", "react", "bootstrap"]
-    }
+html, body, [class*="css"] {
+    font-family: 'Poppins', sans-serif;
 }
 
-# ==================================================
-# 📄 PDF Reader
-# ==================================================
-def read_pdf(file):
-    reader = PyPDF2.PdfReader(file)
-    text = ""
-    for page in reader.pages:
-        if page.extract_text():
-            text += page.extract_text()
-    return text.lower()
-
-# ==================================================
-# 📊 Resume Evaluation Logic
-# ==================================================
-def evaluate_resume(resume_text, role, jd_text=None):
-    role_data = ROLE_SKILLS[role]
-    main_skill = role_data["main"]
-    required_skills = role_data["skills"]
-import streamlit as st
-import PyPDF2
-
-# ==================================================
-# ⚙️ Page Configuration
-# ==================================================
-st.set_page_config(page_title="AI Resume Screening", layout="wide")
-
-# ==================================================
-# 🎨 ADVANCED INNOVATIVE UI (NOT SIMPLE)
-# ==================================================
-st.markdown("""
-<style>
 body {
     background: radial-gradient(circle at top, #0f2027, #000000);
 }
 
-/* Output Glass Container */
-.output-container {
-    background: linear-gradient(
-        135deg,
-        rgba(0, 198, 255, 0.20),
-        rgba(0, 114, 255, 0.20)
-    );
-    border-radius: 26px;
-    padding: 32px;
-    margin-top: 25px;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 0 35px rgba(0, 198, 255, 0.45);
-    border: 1px solid rgba(255,255,255,0.2);
+/* HERO */
+.hero {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    padding: 60px;
+    border-radius: 32px;
+    color: white;
+    box-shadow: 0 0 45px rgba(0,198,255,0.7);
+    margin-bottom: 40px;
+}
+.hero h1 {
+    font-size: 48px;
+    font-weight: 800;
+}
+.hero p {
+    font-size: 18px;
 }
 
-/* Metric Cards */
+/* SECTION CARD */
+.section-card {
+    background: rgba(255,255,255,0.08);
+    padding: 32px;
+    border-radius: 26px;
+    margin-bottom: 35px;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 0 30px rgba(255,255,255,0.15);
+}
+
+/* OUTPUT CONTAINER */
+.output-container {
+    background: linear-gradient(135deg,
+        rgba(0,198,255,0.22),
+        rgba(0,114,255,0.22)
+    );
+    border-radius: 30px;
+    padding: 34px;
+    margin-top: 30px;
+    backdrop-filter: blur(18px);
+    box-shadow: 0 0 40px rgba(0,198,255,0.5);
+}
+
+/* METRIC CARDS */
 .metric-card {
-    background: linear-gradient(145deg, #0f0f0f, #1f1f1f);
-    border-radius: 20px;
+    background: linear-gradient(145deg, #0f0f0f, #1e1e1e);
+    border-radius: 22px;
     padding: 22px;
     text-align: center;
     box-shadow: 0 0 25px rgba(0,255,171,0.35);
 }
 
-/* Decision Glow */
+/* DECISION */
 .selected {
     color: #00ffab;
     font-size: 28px;
@@ -156,7 +88,7 @@ body {
     text-shadow: 0 0 18px #ff4b4b;
 }
 
-/* Skill Badges */
+/* SKILLS */
 .skill {
     display: inline-block;
     padding: 8px 16px;
@@ -172,7 +104,7 @@ body {
     box-shadow: 0 0 14px rgba(255,75,75,0.8);
 }
 
-/* Improvement Cards */
+/* IMPROVEMENT CARD */
 .improve-card {
     background: linear-gradient(135deg,
         rgba(255,255,255,0.12),
@@ -183,17 +115,56 @@ body {
     margin-bottom: 18px;
     box-shadow: 0 0 22px rgba(255,255,255,0.15);
 }
+
+/* BUTTON */
+.stButton>button {
+    background: linear-gradient(135deg, #00ffab, #00c6ff);
+    color: black;
+    font-weight: 700;
+    border-radius: 20px;
+    padding: 12px 30px;
+    border: none;
+    box-shadow: 0 0 18px rgba(0,255,171,0.6);
+}
+.stButton>button:hover {
+    transform: scale(1.05);
+}
+
+/* SIDEBAR */
+section[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #000000, #0f2027);
+}
 </style>
 """, unsafe_allow_html=True)
 
 # ==================================================
-# 🏷️ App Title
+# 🌐 HERO SECTION (WEBPAGE FEEL)
 # ==================================================
-st.title("🧑‍💼 AI Candidate Resume Screening Portal")
-st.caption("Smart Resume Evaluation with Skill Intelligence")
+st.markdown("""
+<div class="hero">
+<h1>🤖 AI Resume Screening Platform</h1>
+<p>
+Smart candidate evaluation using role-based skill intelligence,
+job description matching, and AI-powered improvement insights.
+</p>
+</div>
+""", unsafe_allow_html=True)
 
 # ==================================================
-# 🧠 Job Roles & Skills
+# 📌 SIDEBAR NAVIGATION
+# ==================================================
+st.sidebar.title("📌 Navigation")
+st.sidebar.markdown("AI Resume Screening System")
+st.sidebar.markdown("---")
+st.sidebar.markdown("• Candidate Upload")
+st.sidebar.markdown("• Skill Matching")
+st.sidebar.markdown("• AI Evaluation")
+st.sidebar.markdown("• Resume Improvement")
+st.sidebar.markdown("---")
+st.sidebar.success("🚀 Streamlit Cloud Ready")
+
+# ==================================================
+# 🧠 ROLE SKILLS
 # ==================================================
 ROLE_SKILLS = {
     "Java Developer": {
@@ -219,7 +190,7 @@ ROLE_SKILLS = {
 }
 
 # ==================================================
-# 📄 PDF Reader
+# 📄 PDF READER
 # ==================================================
 def read_pdf(file):
     reader = PyPDF2.PdfReader(file)
@@ -230,108 +201,95 @@ def read_pdf(file):
     return text.lower()
 
 # ==================================================
-# 📊 Resume Evaluation
+# 📊 EVALUATION LOGIC
 # ==================================================
-def evaluate_resume(resume_text, role, jd_text=None):
-    data = ROLE_SKILLS[role]
-    required_skills = data["skills"]
-    main_skill = data["main"]
+def evaluate_resume(text, role, jd=None):
+    skills = ROLE_SKILLS[role]["skills"]
+    main = ROLE_SKILLS[role]["main"]
 
-    matched = [s for s in required_skills if s in resume_text]
-    missing = [s for s in required_skills if s not in resume_text]
+    matched = [s for s in skills if s in text]
+    missing = [s for s in skills if s not in text]
 
-    score = int((len(matched) / len(required_skills)) * 100)
+    score = int(len(matched) / len(skills) * 100)
 
     decision = "SELECTED" if (
-        main_skill in resume_text or len(matched) >= 2 or score >= 50
+        main in text or len(matched) >= 2 or score >= 50
     ) else "REJECTED"
 
     jd_score = None
-    if jd_text:
-        jd_words = [w for w in jd_text.split() if len(w) > 3]
-        jd_match = [w for w in jd_words if w in resume_text]
-        jd_score = int((len(jd_match) / max(len(jd_words), 1)) * 100)
+    if jd:
+        jd_words = [w for w in jd.split() if len(w) > 3]
+        jd_match = [w for w in jd_words if w in text]
+        jd_score = int(len(jd_match) / max(len(jd_words), 1) * 100)
 
     return score, decision, matched, missing, jd_score
 
 # ==================================================
-# 🚀 Improvement Engine
+# 🚀 IMPROVEMENT ENGINE
 # ==================================================
-def improvement_suggestions(role, missing):
-    suggestions = []
-    for skill in missing:
-        suggestions.append({
-            "skill": skill,
-            "action": f"Add **{skill.title()}** with hands-on project & GitHub link",
-            "priority": "High" if skill in ROLE_SKILLS[role]["skills"][:3] else "Medium"
+def improvements(role, missing):
+    tips = []
+    for s in missing:
+        tips.append({
+            "skill": s,
+            "priority": "High" if s in ROLE_SKILLS[role]["skills"][:3] else "Medium",
+            "action": f"Add {s.title()} with real-time project & GitHub link"
         })
 
-    projects = {
-        "Java Developer": "Spring Boot REST API + MySQL",
+    project_map = {
+        "Java Developer": "Spring Boot REST API with MySQL",
         "Python Developer": "Django Full Stack App",
-        "Machine Learning Engineer": "ML Model with Deployment",
-        "Data Scientist": "EDA + Prediction on Kaggle Data",
+        "Machine Learning Engineer": "ML Model + Deployment",
+        "Data Scientist": "EDA + Prediction System",
         "Web Developer": "Responsive React Portfolio"
     }
-    return suggestions, projects.get(role)
+    return tips, project_map.get(role)
 
 # ==================================================
-# 🧑 Candidate Input
+# 🧑 INPUT SECTION
 # ==================================================
-st.subheader("📤 Upload Resume")
+st.markdown('<div class="section-card">', unsafe_allow_html=True)
+st.subheader("📤 Candidate Resume Upload")
 
 name = st.text_input("Candidate Name")
 role = st.selectbox("Job Role", ROLE_SKILLS.keys())
 jd = st.text_area("Job Description (Optional)")
 resume = st.file_uploader("Upload Resume (PDF/TXT)", ["pdf", "txt"])
 
+st.markdown('</div>', unsafe_allow_html=True)
+
 # ==================================================
-# 🚀 Run Screening
+# 🚀 SCREEN BUTTON
 # ==================================================
 if st.button("🚀 Screen Resume"):
     if not name or not resume:
         st.warning("Please enter name and upload resume")
         st.stop()
 
-    resume_text = (
-        read_pdf(resume)
-        if resume.type == "application/pdf"
-        else resume.read().decode("utf-8").lower()
-    )
+    text = read_pdf(resume) if resume.type == "application/pdf" else resume.read().decode().lower()
 
     score, decision, matched, missing, jd_score = evaluate_resume(
-        resume_text, role, jd.lower() if jd else None
+        text, role, jd.lower() if jd else None
     )
 
-    suggestions, project = improvement_suggestions(role, missing)
+    tips, project = improvements(role, missing)
 
     # ==================================================
-    # 📊 OUTPUT (INNOVATIVE)
+    # 📊 OUTPUT SECTION (INNOVATIVE)
     # ==================================================
     st.markdown('<div class="output-container">', unsafe_allow_html=True)
-    st.markdown("## 📊 AI Resume Screening Result")
+    st.markdown("## 📊 AI Screening Result")
 
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown(f"""
-        <div class="metric-card">
-        <h3>Skill Match</h3>
-        <h1>{score}%</h1>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col2:
-        st.markdown(f"""
-        <div class="metric-card">
-        <h3>JD Match</h3>
-        <h1>{jd_score if jd_score is not None else 'N/A'}%</h1>
-        </div>
-        """, unsafe_allow_html=True)
+    c1, c2 = st.columns(2)
+    with c1:
+        st.markdown(f"<div class='metric-card'><h3>Skill Match</h3><h1>{score}%</h1></div>", unsafe_allow_html=True)
+    with c2:
+        st.markdown(f"<div class='metric-card'><h3>JD Match</h3><h1>{jd_score if jd_score else 'N/A'}%</h1></div>", unsafe_allow_html=True)
 
     st.progress(score / 100)
 
-    decision_class = "selected" if decision == "SELECTED" else "rejected"
-    st.markdown(f"<p class='{decision_class}'>Final Decision: {decision}</p>", unsafe_allow_html=True)
+    cls = "selected" if decision == "SELECTED" else "rejected"
+    st.markdown(f"<p class='{cls}'>Final Decision: {decision}</p>", unsafe_allow_html=True)
 
     st.markdown("### ✅ Matched Skills")
     for s in matched:
@@ -342,13 +300,13 @@ if st.button("🚀 Screen Resume"):
         for s in missing:
             st.markdown(f"<span class='skill missing'>{s}</span>", unsafe_allow_html=True)
 
-    st.markdown("## 🚀 AI-Based Resume Improvements")
-    for s in suggestions:
+    st.markdown("## 🚀 AI-Based Improvements")
+    for t in tips:
         st.markdown(f"""
         <div class="improve-card">
-        🔧 <b>{s['skill'].title()}</b><br>
-        👉 {s['action']}<br>
-        ⚡ Priority: <b>{s['priority']}</b>
+        🔧 <b>{t['skill'].title()}</b><br>
+        👉 {t['action']}<br>
+        ⚡ Priority: <b>{t['priority']}</b>
         </div>
         """, unsafe_allow_html=True)
 
@@ -357,8 +315,9 @@ if st.button("🚀 Screen Resume"):
         <div class="improve-card">
         📌 <b>Recommended Project</b><br>
         Build: <b>{project}</b><br>
-        Add GitHub + Deployment URL
+        Add GitHub & Deployment link
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
