@@ -11,11 +11,76 @@ st.title("🧑‍💼 Recruiter ATS Resume Screening")
 st.caption("Open Login | Bulk Resume Screening | Excel Output")
 
 # --------------------------------------------------
+# CSS for professional dark + teal accent theme
+# --------------------------------------------------
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+.stApp {
+    background: linear-gradient(135deg, #0b132b, #1c2541, #00b4d8);
+    background-attachment: fixed;
+    color: #eaeaea;
+}
+.block-container { padding-top: 1rem; }
+
+h1, h2, h3 {
+    color: #ffffff;
+    text-shadow: none;
+}
+
+.card {
+    background: rgba(11,19,43,0.9);
+    border: 1px solid rgba(0,180,216,0.35);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+.metric {
+    background: rgba(11,19,43,0.95);
+    border: 1px solid #00b4d8;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+}
+
+.selected { color: #00ff9c; font-size: 20px; font-weight: 600; }
+.rejected { color: #ff6b6b; font-size: 20px; font-weight: 600; }
+
+.skill {
+    display: inline-block; padding: 7px 14px; margin: 4px;
+    border-radius: 18px; background: rgba(0,180,216,0.15);
+    border: 1px solid rgba(0,180,216,0.5); color: #eafcff;
+}
+.missing {
+    border-color: #ff6b6b; background: rgba(255,107,107,0.15); color: #ffeaea;
+}
+
+.tip {
+    border-left: 4px solid #00b4d8;
+    padding: 12px; margin-bottom: 10px;
+    background: rgba(11,19,43,0.85); border-radius: 10px;
+}
+
+.stButton>button {
+    background: linear-gradient(90deg, #00b4d8, #48cae4);
+    color: #001219; font-weight: 600; padding: 12px 28px;
+    border-radius: 10px; border: none;
+}
+.stButton>button:hover {
+    background: linear-gradient(90deg, #48cae4, #00b4d8);
+    transform: scale(1.03);
+}
+</style>
+""", unsafe_allow_html=True)
+
+# --------------------------------------------------
 # Session State
 # --------------------------------------------------
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
-
 if "recruiter_name" not in st.session_state:
     st.session_state.recruiter_name = ""
 
@@ -49,97 +114,15 @@ def read_pdf(file):
     return text.lower()
 
 # --------------------------------------------------
-# Resume Evaluation
+# Resume Evaluation with Main Skill & 50% logic
 # --------------------------------------------------
-def evaluate_resume(text, role):
+def evaluate_resume(text, role, jd=None):
     main_skill = ROLE_SKILLS[role]["main"]
     skills = ROLE_SKILLS[role]["skills"]
 
     matched = [s for s in skills if s in text]
     missing = [s for s in skills if s not in text]
 
-    score = int((len(matched) / len(skills)) * 100)
+    score = int((len(matched)/len(skills))*100)
 
-    if score >= 50 or main_skill in text or len(matched) >= 2:
-        decision = "SELECT"
-        hiring_status = "Hired"
-    else:
-        decision = "REJECT"
-        hiring_status = "Not Hired"
-
-    return score, decision, hiring_status, matched, missing
-
-# ==================================================
-# 🔓 LOGIN (NO CONDITIONS)
-# ==================================================
-if not st.session_state.logged_in:
-    st.subheader("🔐 Recruiter Login")
-
-    name = st.text_input("Username")
-    password = st.text_input("Password", type="password")
-
-    if st.button("Login"):
-        st.session_state.logged_in = True
-        st.session_state.recruiter_name = name if name else "Recruiter"
-        st.success("Login Successful")
-
-# ==================================================
-# 📊 ATS DASHBOARD
-# ==================================================
-else:
-    st.success(f"Welcome {st.session_state.recruiter_name}")
-
-    role = st.selectbox("Select Job Role", ROLE_SKILLS.keys())
-
-    resumes = st.file_uploader(
-        "Upload Candidate Resumes (Multiple Allowed)",
-        type=["pdf", "txt"],
-        accept_multiple_files=True
-    )
-
-    if st.button("🔍 Screen Resumes"):
-        if not resumes:
-            st.warning("Please upload at least one resume")
-        else:
-            results = []
-
-            for resume in resumes:
-                if resume.type == "application/pdf":
-                    text = read_pdf(resume)
-                else:
-                    text = resume.read().decode("utf-8").lower()
-
-                score, decision, status, matched, missing = evaluate_resume(text, role)
-
-                results.append({
-                    "Resume Name": resume.name,
-                    "Job Role": role,
-                    "AI Score (%)": score,
-                    "Decision": decision,
-                    "Hiring Status": status,
-                    "Matched Skills": ", ".join(matched) if matched else "None",
-                    "Missing Skills": ", ".join(missing) if missing else "None"
-                })
-
-            df = pd.DataFrame(results)
-
-            st.subheader("📋 Screening Results")
-            st.dataframe(df, use_container_width=True)
-
-            # Excel Download
-            buffer = BytesIO()
-            df.to_excel(buffer, index=False)
-            buffer.seek(0)
-
-            st.download_button(
-                "⬇️ Download Excel Report",
-                buffer,
-                "ATS_Results.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )
-
-    if st.button("🚪 Logout"):
-        st.session_state.logged_in = False
-        st.session_state.recruiter_name = ""
-        st.success("Logged out successfully")
-
+    # Decision Logic
