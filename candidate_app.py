@@ -5,138 +5,119 @@ import PyPDF2
 # PAGE CONFIG
 # ==================================================
 st.set_page_config(
-    page_title="Enterprise AI Resume Screening",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    page_title="Executive AI Resume Screening",
+    layout="wide"
 )
 
 # ==================================================
-# PROFESSIONAL ENTERPRISE UI CSS
+# STRONG CONTRAST CSS (STREAMLIT CLOUD SAFE)
 # ==================================================
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-html, body, [class*="css"] {
+* {
     font-family: 'Inter', sans-serif;
 }
 
 /* MAIN BACKGROUND */
-body {
-    background: linear-gradient(180deg, #f4f7fb, #e9eef5);
+.stApp {
+    background-color: #0b1120;
+    color: #e5e7eb;
 }
 
 /* HEADER */
 .header {
-    background: linear-gradient(90deg, #1f3c88, #2f5bea);
-    padding: 35px;
+    background: #020617;
+    padding: 30px;
     border-radius: 16px;
-    color: white;
+    border: 1px solid #334155;
     margin-bottom: 30px;
 }
 
-/* SECTION */
-.section {
-    background: white;
-    padding: 28px;
-    border-radius: 14px;
-    margin-bottom: 30px;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.06);
-}
-
-/* OUTPUT CONTAINER */
-.output {
-    background: linear-gradient(180deg, #ffffff, #f6f9fc);
+/* CARD */
+.card {
+    background: #020617;
+    padding: 26px;
     border-radius: 16px;
-    padding: 32px;
-    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
-    margin-top: 30px;
+    border: 1px solid #334155;
+    margin-bottom: 26px;
+    color: #e5e7eb;
 }
 
 /* METRIC BOX */
 .metric {
-    background: #f4f7fb;
+    background: #020617;
+    border: 1px solid #475569;
+    border-radius: 14px;
     padding: 20px;
-    border-radius: 12px;
     text-align: center;
-    border-left: 6px solid #2f5bea;
+    color: #f8fafc;
 }
 
 /* DECISION */
 .selected {
-    color: #1a7f37;
-    font-size: 24px;
+    color: #22c55e;
+    font-size: 22px;
     font-weight: 700;
 }
 .rejected {
-    color: #b42318;
-    font-size: 24px;
+    color: #ef4444;
+    font-size: 22px;
     font-weight: 700;
 }
 
 /* SKILLS */
 .skill {
     display: inline-block;
+    background: #1e293b;
+    color: #e0e7ff;
     padding: 6px 14px;
     margin: 6px;
-    border-radius: 20px;
-    background: #e6edff;
-    color: #1f3c88;
-    font-weight: 600;
+    border-radius: 999px;
+    border: 1px solid #475569;
+    font-size: 14px;
 }
 .missing {
-    background: #fdecea;
-    color: #b42318;
+    background: #2a0f14;
+    color: #fecaca;
+    border-color: #991b1b;
 }
 
 /* IMPROVEMENT */
-.improve {
-    background: #f9fafb;
-    padding: 18px;
-    border-radius: 12px;
-    margin-bottom: 14px;
-    border-left: 4px solid #2f5bea;
+.tip {
+    background: #020617;
+    border-left: 5px solid #6366f1;
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    color: #e5e7eb;
 }
 
 /* BUTTON */
 .stButton>button {
-    background: #2f5bea;
+    background: #6366f1;
     color: white;
     font-weight: 600;
-    padding: 10px 26px;
+    padding: 10px 28px;
     border-radius: 10px;
     border: none;
 }
 .stButton>button:hover {
-    background: #1f3c88;
-}
-
-/* SIDEBAR */
-section[data-testid="stSidebar"] {
-    background: #ffffff;
-    border-right: 1px solid #e5e7eb;
+    background: #4f46e5;
 }
 </style>
 """, unsafe_allow_html=True)
 
 # ==================================================
-# HEADER (ENTERPRISE STYLE)
+# HEADER
 # ==================================================
 st.markdown("""
 <div class="header">
-<h1>AI Resume Screening System</h1>
-<p>Enterprise-grade candidate evaluation and skill intelligence platform</p>
+<h1>Executive AI Resume Screening</h1>
+<p>Professional candidate evaluation system</p>
 </div>
 """, unsafe_allow_html=True)
-
-# ==================================================
-# SIDEBAR
-# ==================================================
-st.sidebar.title("HR Navigation")
-st.sidebar.markdown("• Resume Screening")
-st.sidebar.markdown("• Skill Evaluation")
-st.sidebar.markdown("• Candidate Insights")
-st.sidebar.markdown("• Hiring Recommendation")
 
 # ==================================================
 # ROLE SKILLS
@@ -199,62 +180,44 @@ def evaluate(text, role, jd=None):
     return score, decision, matched, missing, jd_score
 
 # ==================================================
-# IMPROVEMENTS
+# INPUT CARD
 # ==================================================
-def improvements(role, missing):
-    tips = []
-    for s in missing:
-        tips.append(f"Add hands-on experience in {s.title()} with a project")
-
-    projects = {
-        "Java Developer": "Spring Boot REST API",
-        "Python Developer": "Django CRUD Application",
-        "Machine Learning Engineer": "ML Model with Deployment",
-        "Data Scientist": "EDA + ML Pipeline",
-        "Web Developer": "Responsive Web Portfolio"
-    }
-    return tips, projects.get(role)
-
-# ==================================================
-# INPUT SECTION
-# ==================================================
-st.markdown('<div class="section">', unsafe_allow_html=True)
-st.subheader("Candidate Resume Upload")
+st.markdown('<div class="card">', unsafe_allow_html=True)
+st.subheader("Candidate Information")
 
 name = st.text_input("Candidate Name")
 role = st.selectbox("Job Role", ROLE_SKILLS.keys())
 jd = st.text_area("Job Description (Optional)")
-resume = st.file_uploader("Upload Resume (PDF/TXT)", ["pdf", "txt"])
+resume = st.file_uploader("Upload Resume (PDF / TXT)", ["pdf", "txt"])
 st.markdown('</div>', unsafe_allow_html=True)
 
 # ==================================================
-# SCREENING
+# SCREEN
 # ==================================================
-if st.button("Evaluate Resume"):
+if st.button("Run Resume Evaluation"):
     if not name or not resume:
-        st.warning("Please upload resume and enter candidate name")
+        st.warning("Please enter candidate name and upload resume")
         st.stop()
 
     text = read_pdf(resume) if resume.type == "application/pdf" else resume.read().decode().lower()
     score, decision, matched, missing, jd_score = evaluate(text, role, jd.lower() if jd else None)
-    tips, project = improvements(role, missing)
 
     # ==================================================
-    # OUTPUT
+    # OUTPUT CARD
     # ==================================================
-    st.markdown('<div class="output">', unsafe_allow_html=True)
-    st.subheader("Screening Results")
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    st.subheader("Screening Result")
 
     c1, c2 = st.columns(2)
     with c1:
-        st.markdown(f"<div class='metric'><h3>Skill Match</h3><h2>{score}%</h2></div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='metric'><h3>Skill Match</h3><h1>{score}%</h1></div>", unsafe_allow_html=True)
     with c2:
-        st.markdown(f"<div class='metric'><h3>JD Match</h3><h2>{jd_score if jd_score else 'N/A'}%</h2></div>", unsafe_allow_html=True)
+        st.markdown(f"<div class='metric'><h3>JD Match</h3><h1>{jd_score if jd_score else 'N/A'}%</h1></div>", unsafe_allow_html=True)
 
     st.progress(score / 100)
 
-    cls = "selected" if decision == "SELECTED" else "rejected"
-    st.markdown(f"<p class='{cls}'>Final Decision: {decision}</p>", unsafe_allow_html=True)
+    status_class = "selected" if decision == "SELECTED" else "rejected"
+    st.markdown(f"<p class='{status_class}'>Final Decision: {decision}</p>", unsafe_allow_html=True)
 
     st.markdown("### Matched Skills")
     for s in matched:
@@ -265,13 +228,8 @@ if st.button("Evaluate Resume"):
         for s in missing:
             st.markdown(f"<span class='skill missing'>{s}</span>", unsafe_allow_html=True)
 
-    st.markdown("### Resume Improvement Suggestions")
-    for t in tips:
-        st.markdown(f"<div class='improve'>• {t}</div>", unsafe_allow_html=True)
-
-    if project:
-        st.markdown(f"<div class='improve'><b>Recommended Project:</b> {project}</div>", unsafe_allow_html=True)
+    st.markdown("### Improvement Recommendations")
+    for s in missing:
+        st.markdown(f"<div class='tip'>Improve <b>{s.title()}</b> with practical projects and certifications</div>", unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
-
-
