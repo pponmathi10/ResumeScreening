@@ -184,3 +184,4 @@ if st.button("⚡ Screen Resume"):
         st.markdown(f"<div class='tip'>Add experience in <b>{s}</b></div>", unsafe_allow_html=True)
 
     st.markdown("</div>", unsafe_allow_html=True)
+
